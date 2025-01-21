@@ -1,0 +1,19 @@
+title: MESHTASTIC
+version: 1.0
+brief: Sends the decoded lora packets to meshtasticd via the simulation port
+tags:
+  - sdr
+  - meshtastic
+author:
+  - Peter Pal Koszta
+copyright_owner:
+  - Peter Pal Koszta
+license: GPLv3
+gr_supported_version:
+  - 3.X
+repo: # Put the URL of the repository here
+website: # If you have a separate project website, put it here
+#icon: # Put a URL to a square image here that will be used as an icon
+description: |-
+  Sends the decoded lora packets to meshtasticd via the simulation port
+file_format: 1

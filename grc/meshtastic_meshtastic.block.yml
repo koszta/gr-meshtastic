@@ -1,0 +1,26 @@
+id: meshtastic_meshtastic
+label: meshtastic
+category: '[meshtastic]'
+
+templates:
+  imports: from gnuradio import meshtastic
+  make: meshtastic.meshtastic(key=${key}, url=${url})
+
+parameters:
+- id: url
+  label: URL
+  dtype: string
+  default: https://localhost
+- id: key
+  label: Key
+  dtype: string
+  default: 1PG7OiApB1nwvP+rz05pAQ==
+
+inputs:
+  - label: in0
+    domain: stream
+    dtype: byte
+
+outputs: []
+
+file_format: 1
