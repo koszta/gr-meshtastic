@@ -21,16 +21,22 @@ def decrypt(packet, key):
 
     return decrypted_packet
 
+PACKET_FLAGS_HOP_LIMIT_MASK = 0x07
+PACKET_FLAGS_WANT_ACK_MASK = 0x08
+PACKET_FLAGS_VIA_MQTT_MASK = 0x10
+PACKET_FLAGS_HOP_START_MASK = 0xE0
+PACKET_FLAGS_HOP_START_SHIFT = 5
+
 def to_simulation_packet(packet, key):
     flags = int.from_bytes(packet[12:13], 'big')
 
     meshPacket = mesh_pb2.MeshPacket(
         to=int.from_bytes(packet[0:4], 'big'),
         id=int.from_bytes(packet[8:12], 'big'),
-        want_ack=flags & 16 >> 4 == 1,
-        hop_limit=flags >> 5,
-        hop_start=flags & 7,
-        via_mqtt=flags & 8 >> 3 == 1,
+        want_ack=not not(flags & PACKET_FLAGS_WANT_ACK_MASK),
+        hop_limit=flags & PACKET_FLAGS_HOP_LIMIT_MASK,
+        hop_start=(flags & PACKET_FLAGS_HOP_START_MASK) >> PACKET_FLAGS_HOP_START_SHIFT,
+        via_mqtt=not not flags & PACKET_FLAGS_VIA_MQTT_MASK,
         decoded=mesh_pb2.Data(
             payload=decrypt(packet, key),
             portnum=portnums_pb2.SIMULATOR_APP
