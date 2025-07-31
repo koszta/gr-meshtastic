@@ -30,14 +30,14 @@ class DoxyIndex(Base):
         if self._parsed:
             return
         super(DoxyIndex, self)._parse()
-        self._root = index.parse(os.path.join(self._xml_path, 'index.xml'))
+        self._root = index.parse(os.path.join(self._xml_path, "index.xml"))
         for mem in self._root.compound:
             converted = self.convert_mem(mem)
             # For files and namespaces we want the contents to be
             # accessible directly from the parent rather than having
             # to go through the file object.
             if self.get_cls(mem) == DoxyFile:
-                if mem.name.endswith('.h'):
+                if mem.name.endswith(".h"):
                     self._members += converted.members()
                     self._members.append(converted)
             elif self.get_cls(mem) == DoxyNamespace:
@@ -48,7 +48,6 @@ class DoxyIndex(Base):
 
 
 class DoxyCompMem(Base):
-
     kind = None
 
     def __init__(self, *args, **kwargs):
@@ -59,16 +58,16 @@ class DoxyCompMem(Base):
         return obj.kind == cls.kind
 
     def set_descriptions(self, parse_data):
-        bd = description(getattr(parse_data, 'briefdescription', None))
-        dd = description(getattr(parse_data, 'detaileddescription', None))
-        self._data['brief_description'] = bd
-        self._data['detailed_description'] = dd
+        bd = description(getattr(parse_data, "briefdescription", None))
+        dd = description(getattr(parse_data, "detaileddescription", None))
+        self._data["brief_description"] = bd
+        self._data["detailed_description"] = dd
 
     def set_parameters(self, data):
         vs = [ddc.value for ddc in data.detaileddescription.content_]
         pls = []
         for v in vs:
-            if hasattr(v, 'parameterlist'):
+            if hasattr(v, "parameterlist"):
                 pls += v.parameterlist
         pis = []
         for pl in pls:
@@ -78,7 +77,7 @@ class DoxyCompMem(Base):
             dpi = DoxyParameterItem(pi)
             dpi._parse()
             dpis.append(dpi)
-        self._data['params'] = dpis
+        self._data["params"] = dpis
 
 
 class DoxyCompound(DoxyCompMem):
@@ -90,10 +89,9 @@ class DoxyMember(DoxyCompMem):
 
 
 class DoxyFunction(DoxyMember):
-
     __module__ = "gnuradio.utils.doxyxml"
 
-    kind = 'function'
+    kind = "function"
 
     def _parse(self):
         if self._parsed:
@@ -101,24 +99,22 @@ class DoxyFunction(DoxyMember):
         super(DoxyFunction, self)._parse()
         self.set_descriptions(self._parse_data)
         self.set_parameters(self._parse_data)
-        if not self._data['params']:
+        if not self._data["params"]:
             # If the params weren't set by a comment then just grab the names.
-            self._data['params'] = []
+            self._data["params"] = []
             prms = self._parse_data.param
             for prm in prms:
-                self._data['params'].append(DoxyParam(prm))
+                self._data["params"].append(DoxyParam(prm))
 
-    brief_description = property(lambda self: self.data()['brief_description'])
-    detailed_description = property(
-        lambda self: self.data()['detailed_description'])
-    params = property(lambda self: self.data()['params'])
+    brief_description = property(lambda self: self.data()["brief_description"])
+    detailed_description = property(lambda self: self.data()["detailed_description"])
+    params = property(lambda self: self.data()["params"])
 
 
 Base.mem_classes.append(DoxyFunction)
 
 
 class DoxyParam(DoxyMember):
-
     __module__ = "gnuradio.utils.doxyxml"
 
     def _parse(self):
@@ -126,7 +122,7 @@ class DoxyParam(DoxyMember):
             return
         super(DoxyParam, self)._parse()
         self.set_descriptions(self._parse_data)
-        self._data['declname'] = self._parse_data.declname
+        self._data["declname"] = self._parse_data.declname
 
     @property
     def description(self):
@@ -135,12 +131,11 @@ class DoxyParam(DoxyMember):
             descriptions.append(self.brief_description)
         if self.detailed_description:
             descriptions.append(self.detailed_description)
-        return '\n\n'.join(descriptions)
+        return "\n\n".join(descriptions)
 
-    brief_description = property(lambda self: self.data()['brief_description'])
-    detailed_description = property(
-        lambda self: self.data()['detailed_description'])
-    name = property(lambda self: self.data()['declname'])
+    brief_description = property(lambda self: self.data()["brief_description"])
+    detailed_description = property(lambda self: self.data()["detailed_description"])
+    name = property(lambda self: self.data()["declname"])
 
 
 class DoxyParameterItem(DoxyMember):
@@ -155,20 +150,19 @@ class DoxyParameterItem(DoxyMember):
             for pn in nl.parametername:
                 names.append(description(pn))
         # Just take first name
-        self._data['name'] = names[0]
+        self._data["name"] = names[0]
         # Get description
         pd = description(self._parse_data.get_parameterdescription())
-        self._data['description'] = pd
+        self._data["description"] = pd
 
-    description = property(lambda self: self.data()['description'])
-    name = property(lambda self: self.data()['name'])
+    description = property(lambda self: self.data()["description"])
+    name = property(lambda self: self.data()["name"])
 
 
 class DoxyClass(DoxyCompound):
-
     __module__ = "gnuradio.utils.doxyxml"
 
-    kind = 'class'
+    kind = "class"
 
     def _parse(self):
         if self._parsed:
@@ -183,20 +177,18 @@ class DoxyClass(DoxyCompound):
         # We just ignore this for now.
         self.process_memberdefs()
 
-    brief_description = property(lambda self: self.data()['brief_description'])
-    detailed_description = property(
-        lambda self: self.data()['detailed_description'])
-    params = property(lambda self: self.data()['params'])
+    brief_description = property(lambda self: self.data()["brief_description"])
+    detailed_description = property(lambda self: self.data()["detailed_description"])
+    params = property(lambda self: self.data()["params"])
 
 
 Base.mem_classes.append(DoxyClass)
 
 
 class DoxyFile(DoxyCompound):
-
     __module__ = "gnuradio.utils.doxyxml"
 
-    kind = 'file'
+    kind = "file"
 
     def _parse(self):
         if self._parsed:
@@ -208,19 +200,17 @@ class DoxyFile(DoxyCompound):
             return
         self.process_memberdefs()
 
-    brief_description = property(lambda self: self.data()['brief_description'])
-    detailed_description = property(
-        lambda self: self.data()['detailed_description'])
+    brief_description = property(lambda self: self.data()["brief_description"])
+    detailed_description = property(lambda self: self.data()["detailed_description"])
 
 
 Base.mem_classes.append(DoxyFile)
 
 
 class DoxyNamespace(DoxyCompound):
-
     __module__ = "gnuradio.utils.doxyxml"
 
-    kind = 'namespace'
+    kind = "namespace"
 
     def _parse(self):
         if self._parsed:
@@ -237,10 +227,9 @@ Base.mem_classes.append(DoxyNamespace)
 
 
 class DoxyGroup(DoxyCompound):
-
     __module__ = "gnuradio.utils.doxyxml"
 
-    kind = 'group'
+    kind = "group"
 
     def _parse(self):
         if self._parsed:
@@ -250,7 +239,7 @@ class DoxyGroup(DoxyCompound):
         if self._error:
             return
         cdef = self._retrieved_data.compounddef
-        self._data['title'] = description(cdef.title)
+        self._data["title"] = description(cdef.title)
         # Process inner groups
         grps = cdef.innergroup
         for grp in grps:
@@ -264,28 +253,39 @@ class DoxyGroup(DoxyCompound):
         # Process normal members
         self.process_memberdefs()
 
-    title = property(lambda self: self.data()['title'])
+    title = property(lambda self: self.data()["title"])
 
 
 Base.mem_classes.append(DoxyGroup)
 
 
 class DoxyFriend(DoxyMember):
-
     __module__ = "gnuradio.utils.doxyxml"
 
-    kind = 'friend'
+    kind = "friend"
 
 
 Base.mem_classes.append(DoxyFriend)
 
 
 class DoxyOther(Base):
-
     __module__ = "gnuradio.utils.doxyxml"
 
-    kinds = set(['variable', 'struct', 'union', 'define', 'typedef', 'enum',
-                 'dir', 'page', 'signal', 'slot', 'property'])
+    kinds = set(
+        [
+            "variable",
+            "struct",
+            "union",
+            "define",
+            "typedef",
+            "enum",
+            "dir",
+            "page",
+            "signal",
+            "slot",
+            "property",
+        ]
+    )
 
     @classmethod
     def can_parse(cls, obj):

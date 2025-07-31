@@ -30,20 +30,21 @@ def description(obj):
 
 
 def description_bit(obj):
-    if hasattr(obj, 'content'):
+    if hasattr(obj, "content"):
         contents = [description_bit(item) for item in obj.content]
-        result = ''.join(contents)
-    elif hasattr(obj, 'content_'):
+        result = "".join(contents)
+    elif hasattr(obj, "content_"):
         contents = [description_bit(item) for item in obj.content_]
-        result = ''.join(contents)
-    elif hasattr(obj, 'value'):
+        result = "".join(contents)
+    elif hasattr(obj, "value"):
         result = description_bit(obj.value)
     elif is_string(obj):
         return obj
     else:
         raise Exception(
-            'Expecting a string or something with content, content_ or value attribute')
+            "Expecting a string or something with content, content_ or value attribute"
+        )
     # If this bit is a paragraph then add one some line breaks.
-    if hasattr(obj, 'name') and obj.name == 'para':
+    if hasattr(obj, "name") and obj.name == "para":
         result += "\n\n"
     return result

@@ -6,9 +6,6 @@ Generated Mon Feb  9 19:08:05 2009 by generateDS.py.
 
 from xml.dom import minidom
 
-import os
-import sys
-from . import compound
 
 from . import indexsuper as supermod
 
@@ -39,7 +36,7 @@ supermod.DoxygenType.subclass = DoxygenTypeSub
 
 
 class CompoundTypeSub(supermod.CompoundType):
-    def __init__(self, kind=None, refid=None, name='', member=None):
+    def __init__(self, kind=None, refid=None, name="", member=None):
         supermod.CompoundType.__init__(self, kind, refid, name, member)
 
     def find_members(self, details):
@@ -61,8 +58,7 @@ supermod.CompoundType.subclass = CompoundTypeSub
 
 
 class MemberTypeSub(supermod.MemberType):
-
-    def __init__(self, kind=None, refid=None, name=''):
+    def __init__(self, kind=None, refid=None, name=""):
         supermod.MemberType.__init__(self, kind, refid, name)
 
 
@@ -71,7 +67,6 @@ supermod.MemberType.subclass = MemberTypeSub
 
 
 def parse(inFilename):
-
     doc = minidom.parse(inFilename)
     rootNode = doc.documentElement
     rootObj = supermod.DoxygenType.factory()

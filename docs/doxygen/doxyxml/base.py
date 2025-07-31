@@ -15,7 +15,6 @@ to the doxygen xml docs than the generated classes provide.
 """
 
 import os
-import pdb
 
 from xml.parsers.expat import ExpatError
 
@@ -23,7 +22,6 @@ from .generated import compound
 
 
 class Base(object):
-
     class Duplicate(Exception):
         pass
 
@@ -52,7 +50,7 @@ class Base(object):
 
     @classmethod
     def from_refid(cls, refid, top=None):
-        """ Instantiate class from a refid rather than parsing object. """
+        """Instantiate class from a refid rather than parsing object."""
         # First check to see if its already been instantiated.
         if top is not None and refid in top._refs:
             return top._refs[refid]
@@ -64,7 +62,7 @@ class Base(object):
 
     @classmethod
     def from_parse_data(cls, parse_data, top=None):
-        refid = getattr(parse_data, 'refid', None)
+        refid = getattr(parse_data, "refid", None)
         if refid is not None and top is not None and refid in top._refs:
             return top._refs[refid]
         inst = cls(parse_data, top=top)
@@ -74,7 +72,7 @@ class Base(object):
         return inst
 
     def add_ref(self, obj):
-        if hasattr(obj, 'refid'):
+        if hasattr(obj, "refid"):
             self.top._refs[obj.refid] = obj
 
     mem_classes = []
@@ -83,15 +81,14 @@ class Base(object):
         for cls in self.mem_classes:
             if cls.can_parse(mem):
                 return cls
-        raise Exception(("Did not find a class for object '%s'."
-                         % (mem.get_name())))
+        raise Exception(("Did not find a class for object '%s'." % (mem.get_name())))
 
     def convert_mem(self, mem):
         try:
             cls = self.get_cls(mem)
             converted = cls.from_parse_data(mem, self.top)
             if converted is None:
-                raise Exception('No class matched this object.')
+                raise Exception("No class matched this object.")
             self.add_ref(converted)
             return converted
         except Exception as e:
@@ -130,16 +127,15 @@ class Base(object):
         if cat is None:
             return self._members
         if cat not in self._in_category:
-            self._in_category[cat] = [mem for mem in self._members
-                                      if cat.includes(mem)]
+            self._in_category[cat] = [mem for mem in self._members if cat.includes(mem)]
         return self._in_category[cat]
 
     def get_member(self, name, cat=None):
         self.confirm_no_error()
         # Check if it's in a namespace or class.
-        bits = name.split('::')
+        bits = name.split("::")
         first = bits[0]
-        rest = '::'.join(bits[1:])
+        rest = "::".join(bits[1:])
         member = self._get_dict_members(cat).get(first, self.NoSuchMember)
         # Raise any errors that are returned.
         if member in set([self.NoSuchMember, self.Duplicate]):
@@ -150,7 +146,7 @@ class Base(object):
 
     def has_member(self, name, cat=None):
         try:
-            mem = self.get_member(name, cat=cat)
+            self.get_member(name, cat=cat)
             return True
         except self.NoSuchMember:
             return False
@@ -179,11 +175,11 @@ class Base(object):
                 self._members.append(converted)
 
     def retrieve_data(self):
-        filename = os.path.join(self._xml_path, self.refid + '.xml')
+        filename = os.path.join(self._xml_path, self.refid + ".xml")
         try:
             self._retrieved_data = compound.parse(filename)
         except ExpatError:
-            print('Error in xml in file %s' % filename)
+            print("Error in xml in file %s" % filename)
             self._error = True
             self._retrieved_data = None
 

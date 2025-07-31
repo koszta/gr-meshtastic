@@ -25,38 +25,36 @@ class _clang_format_options:
 
 _clang_format = _clang_format_options()
 
-with section("parse"):
+with section("parse"):  # noqa: F821
     additional_commands = {
-        'gr_python_install': {
-            'flags': [],
-            'kwargs': {
-                "PROGRAMS": "*",
-                "FILES": "*",
-                "DESTINATION": "*"
-            }
+        "gr_python_install": {
+            "flags": [],
+            "kwargs": {"PROGRAMS": "*", "FILES": "*", "DESTINATION": "*"},
         },
     }
 
-with section("markup"):
+with section("markup"):  # noqa: F821
     first_comment_is_literal = True
     enable_markup = False
 
-with section("format"):
+with section("format"):  # noqa: F821
     disable = False
     line_width = int(_clang_format["ColumnLimit"])
     tab_size = int(_clang_format["IndentWidth"])
     min_prefix_chars = tab_size
     max_prefix_chars = 3 * tab_size
-    use_tabchars = _clang_format["UseTab"] in ("ForIndentation",
-                                               "ForContinuationAndIndentation",
-                                               "Always")
+    use_tabchars = _clang_format["UseTab"] in (
+        "ForIndentation",
+        "ForContinuationAndIndentation",
+        "Always",
+    )
     separate_ctrl_name_with_space = False
     separate_fn_name_with_space = False
     dangle_parens = False
-    command_case = 'canonical'
-    keyword_case = 'upper'
+    command_case = "canonical"
+    keyword_case = "upper"
 
-with section("lint"):
+with section("lint"):  # noqa: F821
     max_arguments = 6
     max_localvars = 20
     max_statements = 75
