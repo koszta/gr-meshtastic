@@ -54,7 +54,7 @@ def to_simulation_packet(packet, key):
 class meshtastic(gr.sync_block):
     """Meshtastic Simulator"""
 
-    def __init__(self, key="1PG7OiApB1nwvP+rz05pAQ==", url="https://localhost"):
+    def __init__(self, key="1PG7OiApB1nwvP+rz05pAQ==", url="http://localhost"):
         gr.sync_block.__init__(
             self,
             name='Meshtastic Simulator',
