@@ -67,7 +67,7 @@ class meshtastic(gr.sync_block):
 
     def work(self, input_items, output_items):
         try:
-            requests.put(self.url + '/api/v1/toradio', data=to_simulation_packet(input_items[0].tobytes(), self.key).SerializeToString(), headers={'accept': 'application/x-protobuf'}, verify=False)
+            requests.put(self.url + '/api/v1/toradio', data=to_simulation_packet(input_items[0].tobytes(), self.key).SerializeToString(), headers={'accept': 'application/x-protobuf'})
         except Exception as exception:
             print(exception)
 
